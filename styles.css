@@ -1,0 +1,83 @@
+:root {
+    --hue: 50;
+    --saturation: 100;
+    --lightness: 50;
+    --alpha: 1;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: sans-serif;
+    width: 100vw;
+    height: 100vh;
+    background-image: -webkit-linear-gradient(
+        45deg,
+        hsla(
+            var(--hue),
+            calc(var(--saturation) * 1%),
+            calc(var(--lightness) * 1%),
+            var(--alpha)
+        ),
+        hsla(
+            calc(var(--hue) + 180),
+            calc(var(--saturation) * 1%),
+            calc(var(--lightness) * 1%),
+            var(--alpha)
+        )
+    ), url('/img/wall.jpg');
+    background-image: -moz-linear-gradient(
+        45deg,
+        hsla(
+            var(--hue),
+            calc(var(--saturation) * 1%),
+            calc(var(--lightness) * 1%),
+            var(--alpha)
+        ),
+        hsla(
+            calc(var(--hue) + 180),
+            calc(var(--saturation) * 1%),
+            calc(var(--lightness) * 1%),
+            var(--alpha)
+        )
+    ), url('/img/wall.jpg');
+    background-image: linear-gradient(
+        45deg,
+        hsla(
+            var(--hue),
+            calc(var(--saturation) * 1%),
+            calc(var(--lightness) * 1%),
+            var(--alpha)
+        ),
+        hsla(
+            calc(var(--hue) + 180),
+            calc(var(--saturation) * 1%),
+            calc(var(--lightness) * 1%),
+            var(--alpha)
+        )
+    ), url('/img/wall.jpg');
+    padding: 10px;
+}
+
+.container, .box {
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.box {
+    background-color: rgb(255, 255, 255);
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgb(44, 44, 44);
+}
+
+.box:not(:last-child),
+.box > *:not(:last-child) {
+    margin-bottom: 10px;
+}
+  
