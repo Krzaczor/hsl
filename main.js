@@ -1,85 +1,55 @@
 "use strict";
 
-const setGradient = (prop, value) => {
-    document.documentElement.style.setProperty(`--${prop}`, value);
-}
+const hslaInputs = [...document.querySelectorAll('input[data-name]')];
+const hslaParagraphs = [...document.querySelectorAll('p[data-name]')];
+const docElement = document.documentElement;
 
-const updateValue = (element, value) => {
-    if ('value' in element) {
-        element.value = value;
-    } else {
-        element.textContent = value;
+class HslaColor {
+    constructor(hue, saturation, lightness, alpha) {
+        this.hue = hue;
+        this.saturation = saturation;
+        this.lightness = lightness;
+        this.alpha = alpha;
+    }
+
+    setColor(name, value) {
+        if (['hue', 'saturation', 'lightness', 'alpha'].includes(name)) {
+            this[name] = value;
+        }
+    }
+
+    updateColorCSS(key) {
+        docElement.style.setProperty(`--${key}`, this.serialize());
+    }
+
+    serialize() {
+        const { hue, saturation, lightness, alpha } = this;
+        return `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha})`;
     }
 }
 
-const Hue = (init = 60) => {
-    const change = ({ value, dataset }) => {
-        setGradient(dataset.name, value);
-    }
+const hslaColor = new HslaColor(60, 100, 50, 1);
+const hslaColorOpposed = new HslaColor(240, 100, 50, 1);
 
-    return {
-        name: 'hue',
-        value: init,
-        change
-    }
-}
+hslaInputs.forEach(input => {
+    const { name } = input.dataset;
 
-const Saturation = (init = 100) => {
-    const change = ({ value, dataset }) => {
-        setGradient(dataset.name, value);
-    }
+    input.value = hslaColor[name];
+    hslaColor.updateColorCSS('color');
+    hslaColorOpposed.updateColorCSS('color-opposed');
 
-    return {
-        name: 'saturation',
-        value: init,
-        change
-    }
-}
+    const paragraphElement = hslaParagraphs.find(({ dataset }) => dataset.name === name);
+    paragraphElement.textContent = `${hslaColor[name]}`;
 
-const Lightness = (init = 50) => {
-    const change = ({ value, dataset }) => {
-        setGradient(dataset.name, value);
-    }
+    input.addEventListener('input', (event) => {
+        const { value } = event.target;
 
-    return {
-        name: 'lightness',
-        value: init,
-        change
-    }
-}
+        hslaColor.setColor(name, value);
+        hslaColorOpposed.setColor(name, name === 'hue' ? +value + 180 : value);
 
-const Alpha = (init = 1) => {
-    const change = ({ value, dataset }) => {
-        setGradient(dataset.name, value);
-    }
+        hslaColor.updateColorCSS('color');
+        hslaColorOpposed.updateColorCSS('color-opposed');
 
-    return {
-        name: 'alpha',
-        value: init,
-        change
-    }
-}
-
-const tools = [
-    Hue(),
-    Saturation(),
-    Lightness(),
-    Alpha()
-];
-
-const handleChange = (elementResult, change = () => {}) => {
-    return ({ target }) => {
-        change(target);
-        updateValue(elementResult, target.value);
-    }
-}
-
-tools.forEach(tool => {
-    const element = document.querySelector(`[data-name="${tool.name}"]`);
-    const elementResult = document.querySelector(`[data-name="${tool.name}-value"]`);
-
-    element.addEventListener('input', handleChange(elementResult, tool.change), false);
-    updateValue(element, tool.value);
-    updateValue(elementResult, tool.value);
-    setGradient(tool.name, tool.value);
-})
+        paragraphElement.textContent = `${value}`;
+    });
+});
