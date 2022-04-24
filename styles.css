@@ -60,7 +60,7 @@ body {
             var(--alpha)
         )
     ), url('./img/wall.jpg');
-    padding: 10px;
+    padding: 20px;
 }
 
 .container, .box {
